@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "rules": {},
+  "overrides": [
+    {
+      "files": ["aws/cloudfront/**/functions/**/*.js", "cf/**/functions/**/*.js"],
+      "rules": {
+        "no-var": "off",
+        "prefer-const": "off",
+        "no-async-await": "error",
+        "no-await-in-loop": "error",
+        "symbol-description": "error",
+        "no-empty-function": "off",
+        "prefer-module": "off",
+        "prefer-arrow-callback": "off",
+        "prefer-template": "off",
+        "prefer-spread": "off",
+        "prefer-rest-params": "off",
+        "prefer-destructuring": "off",
+        "prefer-exponentiation-operator": "off",
+        "prefer-object-spread": "off",
+        "prefer-numeric-literals": "off"
+      }
+    }
+  ]
+}

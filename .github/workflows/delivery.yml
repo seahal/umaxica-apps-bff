@@ -2,24 +2,21 @@ name: CD
 on:
   push:
     branches:
-      - master
-      - develop # TODO: あとでけす
+      - main
   pull_request:
     branches:
-      - master
-      - develop # TODO: あとでけす
+      - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 permissions: {}
 jobs:
-  install:
+  deploy-aws:
     strategy:
       matrix:
-        one: ["www", "api"]
-        two: ["jp", "root"]
-        three: ["com", "net", "app", "org"]
-        four: ["public", "maintenance", "errors", "functions"]
+        region: ["www", "jpn", "usa"]
+        domain: ["com", "net", "app", "org"]
+        content: ["public", "maintenance", "errors", "functions"]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     defaults:
@@ -45,7 +42,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Sync to S3 (staging)
         if: false
-        run: aws s3 sync ./src/${{ matrix.one }}/${{ matrix.two }}/${{ matrix.three }}/${{ matrix.four }} s3://umaxica.staging.cloudfront.${{ matrix.one }}.${{ matrix.two }}.${{ matrix.three }}.${{ matrix.four }} --delete
+        run: aws s3 sync ./aws/cloudfront/${{ matrix.region }}/${{ matrix.domain }}/${{ matrix.content }} s3://umaxica.staging.cloudfront.${{ matrix.region }}.${{ matrix.domain }}.${{ matrix.content }} --delete
       - name: Sync to S3 (production)
         if: true
-        run: aws s3 sync ./src/${{ matrix.one }}/${{ matrix.two }}/${{ matrix.three }}/${{ matrix.four }} s3://umaxica.production.cloudfront.${{ matrix.one }}.${{ matrix.two }}.${{ matrix.three }}.${{ matrix.four }} --delete
+        run: aws s3 sync ./aws/cloudfront/${{ matrix.region }}/${{ matrix.domain }}/${{ matrix.content }} s3://umaxica.production.cloudfront.${{ matrix.region }}.${{ matrix.domain }}.${{ matrix.content }} --delete
